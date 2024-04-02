@@ -1,7 +1,9 @@
 import json  # Import the json module for serialization
-from rabbitmq.models.config import Settings, get_settings
+
 import pika
 from pika.credentials import PlainCredentials
+
+from rabbitmq.models.config import Settings, get_settings
 
 settings: Settings = get_settings()
 
@@ -26,11 +28,11 @@ channel.queue_declare(queue=settings.rbq_queue_name, durable=True)
 
 # Define a dictionary to send as the message body
 message_dict = {
-    "event_type": "entry",
-    "client_id": "61320008",
-    "message_body": "This is a sample message",
-    "remark": "Just for test",
-    "timestamp": 12789901
+    "event_type": "checkout",
+    "client_id": "61320012",
+    "message_body": "Another checkout message",
+    "remark": "Just for checkout",
+    "timestamp": 12789902
 }
 
 # Serialize the dictionary to a JSON string

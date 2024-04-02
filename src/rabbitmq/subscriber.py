@@ -1,7 +1,7 @@
+import copy
 import json
 
 import pika
-import copy
 from pika.credentials import PlainCredentials
 from sqlalchemy.orm import sessionmaker
 from structlog import get_logger
@@ -52,7 +52,7 @@ def start_consumer():
             
             decoded_body = body.decode('utf-8')
             serialized_data = json.loads(decoded_body)
-            event = serialized_data.get("event")
+            event = serialized_data.get("event_type")
             if event in valid_events:
                 logger.info("Received", message="accepted", data=serialized_data)
                 execute_message(serialized_data)
@@ -71,9 +71,10 @@ def execute_message(data: dict):
     try:
         copy_object = copy.deepcopy(data)
         copy_object.pop('timestamp', None)
-        event_type = copy_object.get("event")
+        event_type = copy_object.get("event_type")
         cid = copy_object.get("client_id")
         translated_event = event_translator(event_type)
+        copy_object["event_type"] = translated_event
         operate_db(copy_object)
         logger.info(translated_event, client_id=cid, status='Done')
     except Exception as e:
@@ -84,4 +85,7 @@ def operate_db(data):
         payload = PayloadMsg(**data)
         session.add(payload)
         session.commit()
+
+if __name__ == '__main__':
+    start_consumer()
 

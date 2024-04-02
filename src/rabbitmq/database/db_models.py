@@ -1,6 +1,5 @@
 import pymysql
-from sqlalchemy import (Column, Integer, String,
-                        create_engine)
+from sqlalchemy import Column, Integer, String, create_engine
 from sqlalchemy.exc import OperationalError
 from sqlalchemy.orm import declarative_base
 from sqlalchemy_utils import create_database, database_exists

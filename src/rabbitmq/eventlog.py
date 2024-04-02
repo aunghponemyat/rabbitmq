@@ -1,5 +1,4 @@
 import logging
-import os
 from datetime import datetime
 from logging import StreamHandler
 from logging.handlers import SysLogHandler
@@ -46,10 +45,6 @@ def custom_order_processor(_, __, event_dict):
             event_dict = {"event": event, **event_dict}
     return event_dict
 
-base_dir = os.path.dirname(os.path.realpath('.env'))
-log_path = os.path.join(base_dir, 'logs/')
-log_file_path = f"{log_path}{settings.log_filename}"
-
 syslog_handler = SysLogHandler(address="/dev/log")
 formatter = logging.Formatter('session %(name)s %(asctime)s [%(levelname)-8s] %(message)s')
 syslog_handler.setFormatter(formatter)
@@ -78,7 +73,7 @@ logging.basicConfig(
     format="%(asctime)s [%(levelname)-8s] %(message)s",
     datefmt="%Y-%m-%d %H:%M:%S",
     level=logging.INFO,
-    handlers=[syslog_handler, stream_handler, logging.FileHandler(log_file_path)],
+    handlers=[syslog_handler, stream_handler],
 )
 
 def custom_key_value_renderer(_, __, event_dict):
